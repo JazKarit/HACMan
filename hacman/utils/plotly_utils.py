@@ -34,8 +34,10 @@ def plot_pcd_with_score(name, points, action_score, size=3):
 
 def plot_action(name, start, direction, color='red', size=3):
     direction = direction*0.02*3  # action scale=0.02. steps=10
-    if start is None: x, y, z = 0, 0, 0
-    else: x, y, z = start[0], start[1], start[2]
+    if isinstance(start, (list, tuple, np.ndarray)) and len(start) >= 3:
+        x, y, z = start[0], start[1], start[2]
+    else: 
+        x, y, z = 0, 0, 0
     u, v, w = direction[0], direction[1], direction[2]
     return go.Scatter3d(x=[x, x + u], y=[y, y + v], z=[z, z + w], mode='lines',
                         line=dict(color=format_color(color), width=10), name=name)
