@@ -302,4 +302,5 @@ class HACManBinEnv(BaseEnv):
         else:
             raise NotImplementedError
 
+        # TODO: record success and reward to the distance learning network
         return success, reward

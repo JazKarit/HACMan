@@ -127,6 +127,8 @@ class PokeEnv(BaseEnv):
         
         kwargs['table_solref'] = (0.01, 1)
         kwargs['table_xml'] = 'bin_arena_all_side_planes.xml'
+        #kwargs['table_xml'] = 'bin_with_obstacle.xml'
+        #kwargs['table_xml'] = 'big_bin.xml'
         kwargs['hard_reset'] = object_name is None and object_dataset != 'cube'
 
         # Setup Controller
@@ -164,6 +166,7 @@ class PokeEnv(BaseEnv):
             control_freq=control_freq,
             ignore_done=ignore_done,
             render_camera=render_camera,
+            remove_walls=True,
             **kwargs)
                 
         # Action location range (after BaseEnv init)
@@ -724,8 +727,8 @@ class PokeEnv(BaseEnv):
 
             # add variation to the goals when there is no wall interactions
             if self.goal_mode in {"any", "any_var_size"}:
-                pos_range_lb = self.location_center - self.location_scale * 0.75
-                pos_range_ub = self.location_center + self.location_scale * 0.75
+                pos_range_lb = self.location_center - self.location_scale * 0.7
+                pos_range_ub = self.location_center - self.location_scale * 0.9
                 goal_xy = np.random.uniform(pos_range_lb, pos_range_ub)[:2]
                 goal[:2] = goal_xy
                 # goal[6] = np.random.uniform(-1, 1)

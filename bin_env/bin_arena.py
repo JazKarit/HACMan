@@ -22,7 +22,7 @@ class BinArena(Arena):
             self,
             xml_filename="bin_arena.xml",
             bin_pos=(0, 0, 0),
-            bin_full_size=(0.45, 0.54, 0.107),
+            bin_full_size=(1.8, 1.8, 0.107),
             bin_friction=(0.3, 0.005, 0.0001),
             bin_solref=(0.02, 1.),
             bin_solimp=(0.9, 0.95, 0.001), 

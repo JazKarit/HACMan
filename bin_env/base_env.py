@@ -145,7 +145,7 @@ class BaseEnv(ManipulationEnv):
         controller_configs=None,
         gripper_types="default",
         initialization_noise="default",
-        table_full_size=(0.45, 0.54, 0.107),
+        table_full_size=(1.8, 1.8, 0.107),
         table_size_rand=(0., 0., 0.),
         table_friction=(0.3, 5e-3, 1e-4),
         table_solref=(0.02, 1),
@@ -313,13 +313,13 @@ class BaseEnv(ManipulationEnv):
         self.table_offset[2] = np.random.uniform(low=self.table_offset_z_min,
                                                  high=self.table_offset_z_max)
         if self.remove_walls:
-            bin_full_size = np.array([0.8, 0.8, 0.107])
+            bin_full_size = np.array([1.8, 1.8, 0.107])
             mujoco_arena = BinArena(bin_pos=self.table_offset,
                                     bin_full_size=bin_full_size,
                                     bin_friction=self.table_friction,
                                     bin_solref=self.table_solref,
                                     bin_solimp=self.table_solimp,
-                                    hidden_walls="FBLR",
+                                    hidden_walls="",
                                     xml_filename=self.table_xml)
         else:
             self.table_size_curr = self.table_full_size + (np.random.rand(3)*2 - 1)*self.table_size_rand
