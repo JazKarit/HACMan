@@ -298,7 +298,6 @@ class HACManBinEnv(BaseEnv):
             ori_diff = angle_diff(object_ori, goal_ori) / np.pi * 180.0
             reward = - (50 * pos_diff + 0.2 * ori_diff)
             success = - reward < self.success_threshold
-        
         else:
             raise NotImplementedError
 

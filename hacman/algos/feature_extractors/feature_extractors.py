@@ -35,6 +35,8 @@ class PointCloudExtractor(BaseFeaturesExtractor):
             input_channels += 12
         elif preprocessing_fn == 'goal_pose_quat':
             input_channels += 7
+        elif preprocessing_fn == 'no_goal':
+            pass
         self.backbone = init_network(config, input_channels=input_channels, output_channels=[])
         
     def forward(self, observations: TensorDict, per_point_output=False) -> torch.Tensor:
@@ -89,6 +91,8 @@ class PointCloudGlobalExtractor(BaseFeaturesExtractor):
             input_channels += 12
         elif preprocessing_fn == 'goal_pose_quat':
             input_channels += 7
+        elif preprocessing_fn == 'no_goal':
+            pass
         self.backbone = init_network(config, input_channels=input_channels, output_channels=[])
         self.include_gripper = include_gripper
         
@@ -260,3 +264,28 @@ def preprocessing_goal_pose(obs, quat=False):
     data_x = data_x.reshape(-1, data_x.shape[-1])
     data_batch = torch.arange(object_pcd_points.shape[0], device=device).repeat_interleave(object_pcd_points.shape[1] + background_pcd_points.shape[1])
     return data_x, data_pos, data_batch
+
+
+def preprocessing_no_goal(obs):
+    dtype = obs['object_pcd_points'].dtype
+    device = obs['object_pcd_points'].device
+    batch_size = obs['object_pcd_points'].shape[0]
+    num_obj_points = obs['object_pcd_points'].shape[1]
+    num_bg_points = obs['background_pcd_points'].shape[1]
+
+    # Only mask as feature (1 for object, 0 for background)
+    obj_mask = torch.ones((batch_size, num_obj_points, 1), dtype=dtype, device=device)
+    bg_mask = torch.zeros((batch_size, num_bg_points, 1), dtype=dtype, device=device)
+
+    object_feature = obj_mask
+    background_feature = bg_mask
+
+    data_pos = torch.cat([obs['object_pcd_points'], obs['background_pcd_points']], dim=1)
+    data_x = torch.cat([object_feature, background_feature], dim=1)
+
+    data_pos = data_pos.reshape(-1, 3)
+    data_x = data_x.reshape(-1, 1)
+    data_batch = torch.arange(batch_size, device=device).repeat_interleave(num_obj_points + num_bg_points)
+
+    return data_x, data_pos, data_batch
+

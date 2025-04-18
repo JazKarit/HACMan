@@ -17,6 +17,8 @@ from hacman.sb3_utils.evaluation import evaluate_policy
 from hacman.algos.setup_model import setup_model, add_model_config
 from hacman.envs.setup_envs import setup_envs, add_env_config
 
+
+
 import argparse
 import torch_geometric
 
@@ -113,7 +115,8 @@ if __name__ == "__main__":
         model.learn(
             total_timesteps=1000000,
             log_interval=10,
-            callback=callback_list)
+            callback=callback_list,
+            eval_freq=100000)
 
     # ------------- Eval -------------
     else:

@@ -15,6 +15,8 @@ def add_model_config(parser):
 
 def init_network(config, input_channels, output_channels, mode=None):
     if config["model"] == 'pt':
+        if input_channels == 1:
+            config["pos_in_feature"] = True
         network = PointTransformerSegmentation(input_channels, output_channels, 
                                             dim_model=[32, 64, 128, 256, 512], 
                                             k=16, 
