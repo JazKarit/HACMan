@@ -28,6 +28,7 @@ def add_model_config(parser):
     parser.add_argument("--share_features_extractor", action="store_true", help="share features extractor")
     parser.add_argument("--preprocessing_fn", default="flow", type=str, help="Input processing function")
     parser.add_argument('--net_arch', default=[128, 128, 128], nargs="+", type=int)
+    parser.add_argument('--buffer_size', default=1e6, type=int)
 
     # Baseline options
     parser.add_argument("--action_mode", default='per_point_action', type=str,
@@ -74,7 +75,7 @@ def setup_model(config, env, result_folder, normalize_param=None):
                 tensorboard_log=result_folder+'/tb', gradient_steps=config['gradient_steps'], 
                 clip_critic_grad_norm=config['clip_grad_norm'], clamp_critic_min=config['clamp_critic_min'],
                 clamp_critic_max=config['clamp_critic_max'], seed=config["seed"],
-                mean_q=config['mean_q'])
+                mean_q=config['mean_q'], buffer_size=config['buffer_size'])
         if config['load_ckpt'] is None:
             model = TD3(policy, env, **td3_kwargs)
         else:

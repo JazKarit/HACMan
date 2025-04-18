@@ -298,6 +298,18 @@ class HACManBinEnv(BaseEnv):
             ori_diff = angle_diff(object_ori, goal_ori) / np.pi * 180.0
             reward = - (50 * pos_diff + 0.2 * ori_diff)
             success = - reward < self.success_threshold
+
+        elif self.reward_mode == "push_straight":
+            object_pos, object_ori = decompose_pose_mat(obs['object_pose'])
+            goal_pos, goal_ori = decompose_pose_mat(goal)
+            pos_diff = np.linalg.norm(object_pos-goal_pos)
+            ori_diff = angle_diff(object_ori, goal_ori) / np.pi * 180.0
+
+            # Pushing far is good, having the object rotate is bad
+            reward = 50 * pos_diff - 0.2 * ori_diff 
+            success = reward > 45
+
+            return success, reward
         else:
             raise NotImplementedError
 

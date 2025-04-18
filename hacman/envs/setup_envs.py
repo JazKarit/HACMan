@@ -11,7 +11,7 @@ from hacman.envs.setup_location_policy import setup_location_policy, add_locatio
 
 
 def add_env_config(parser):
-    parser.add_argument("--env", default='simple_env', type=str, choices={'simple_env', 'hacman_bin_env', 'push_straight_env'})
+    parser.add_argument("--env", default='simple_env', type=str, choices={'simple_env', 'hacman_bin_env', 'push_straight_env', 'push_straight_simple'})
     parser.add_argument("--train_n_envs", default=20, type=int, help="Number of training envs in parallel")
     parser.add_argument("--eval_n_envs", default=10, type=int, help="Number of eval envs in parallel")
     parser.add_argument("--record_from_cam", default=None, type=str, help="Record video from camera.")
@@ -111,6 +111,9 @@ def setup_envs(config, eval_env_only=False):
         elif config['env'] == 'push_straight_env':
             from hacman.envs.sim_envs.push_straight_env import PushStraightEnv
             env = PushStraightEnv(**config)
+        elif config['env'] == 'push_straight_simple':
+            from hacman.envs.sim_envs.push_straight_env0 import PushStraightEnv0
+            env = PushStraightEnv0(**config)
         else:
             raise NotImplementedError
         env = TimeLimit(env, max_episode_steps=config['max_episode_steps'])
