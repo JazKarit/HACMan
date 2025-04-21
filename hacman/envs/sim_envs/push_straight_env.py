@@ -51,7 +51,6 @@ class PushStraightEnv(BaseEnv):
         self.reward_scale = reward_scale
         self.reward_gripper_distance = reward_gripper_distance
         self.success_threshold = success_threshold
-        print("Push Straight Env")
 
         # Override the base env's observation and action space
         self.action_mode = action_mode
