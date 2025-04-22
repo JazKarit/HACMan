@@ -56,7 +56,7 @@ class PushStraightEnv(BaseEnv):
         self.action_mode = action_mode
         if self.action_mode == "per_point_action":
             self.observation_space = gym.spaces.Dict(
-                spaces={
+               spaces={
                     "poke_idx": gym.spaces.Box(-np.inf, np.inf, (1,)),
                     "object_pose": gym.spaces.Box(-np.inf, np.inf, (4,4)),
                     "goal_pose": gym.spaces.Box(-np.inf, np.inf, (4,4)),
@@ -121,17 +121,25 @@ class PushStraightEnv(BaseEnv):
                 import ipdb; ipdb.set_trace()
         else:
             table_center_pos = self.env.location_center
-            table_center_pos[2] = self.get_cube_size()[2] + self.table_offset[2]
             default_ori = np.array([1., 0., 0., 0.])
-            table_center = to_pose_mat(table_center_pos, default_ori)
             
+            table_center = None
+            if table_center_pos:
+                table_center_pos[2] = self.env.get_cube_size()[2] + self.env.table_offset[2]
+                table_center = to_pose_mat(table_center_pos, default_ori)
+            else:
+                print("Warning: table center not defined")
+
             if self.action_mode == "regress_action_only":
                 raw_obs = self.env.reset(
                     **kwargs, start_gripper_above_obj=True, object_pose=table_center)
             else:
                 raw_obs = self.env.reset(**kwargs, object_pose=table_center)
-                
-            self.goal = table_center
+            
+            if table_center:
+                self.goal = table_center
+            else:
+                self.goal = self.env.sample_goal(raw_obs)
             self.env.set_goal(self.goal)
             obs = self.process_observation(raw_obs)
                 
@@ -254,15 +262,7 @@ class PushStraightEnv(BaseEnv):
         obj_idx = np.arange(obs['object_pcd_points'].shape[0])
         points = obs['object_pcd_points'][obj_idx]
         normals = obs['object_pcd_normals'][obj_idx]
-        
-        # Sample points to a fixed length
-        obj_idx = sample_idx(len(points), self.object_pcd_size)
-        new_obs['object_pcd_points'] = points[obj_idx, :]
-        new_obs['object_pcd_normals'] = normals[obj_idx, :]
-        bg_idx = sample_idx(len(obs['background_pcd_points']), self.background_pcd_size)
-        new_obs['background_pcd_points'] = obs['background_pcd_points'][bg_idx, :]
-        
-        if self.action_mode == "per_point_action":
+        if self.action_mode == "per_point_action": 
             # Us a random policy by default. Will be overwritten by the wrapper.
             location_info = self.random_location_policy.get_action(new_obs)
             new_obs.update(location_info)
