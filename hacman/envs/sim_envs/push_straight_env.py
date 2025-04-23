@@ -120,26 +120,13 @@ class PushStraightEnv(BaseEnv):
                 print(f'Cannot find a goal within 10 attempts.')
                 import ipdb; ipdb.set_trace()
         else:
-            table_center_pos = self.env.location_center
-            default_ori = np.array([1., 0., 0., 0.])
-            
-            table_center = None
-            if table_center_pos:
-                table_center_pos[2] = self.env.get_cube_size()[2] + self.env.table_offset[2]
-                table_center = to_pose_mat(table_center_pos, default_ori)
-            else:
-                print("Warning: table center not defined")
-
             if self.action_mode == "regress_action_only":
                 raw_obs = self.env.reset(
-                    **kwargs, start_gripper_above_obj=True, object_pose=table_center)
+                    **kwargs, start_gripper_above_obj=True)
             else:
-                raw_obs = self.env.reset(**kwargs, object_pose=table_center)
-            
-            if table_center:
-                self.goal = table_center
-            else:
-                self.goal = self.env.sample_goal(raw_obs)
+                raw_obs = self.env.reset(**kwargs)
+        
+            self.goal = to_pose_mat(raw_obs['cube_pos'],raw_obs['cube_quat'])
             self.env.set_goal(self.goal)
             obs = self.process_observation(raw_obs)
                 
@@ -283,11 +270,12 @@ class PushStraightEnv(BaseEnv):
 
         # goal pose is actually start pose
         goal_pos, goal_ori = decompose_pose_mat(goal)
-        pos_diff = np.linalg.norm(object_pos-goal_pos)
+        pos_diff = (np.linalg.norm(object_pos-goal_pos)-0.5)**2
         ori_diff = angle_diff(object_ori, goal_ori) / np.pi * 180.0
 
         # Pushing far is good, having the object rotate is bad
-        reward = 50 * pos_diff - 0.2 * ori_diff 
-        success = reward > 45
+        # 180 degreees = (0.5 meters)^2
+        reward = -1*(4 * pos_diff + ori_diff / 180)
+        success = -reward < self.success_threshold
 
         return success, reward
