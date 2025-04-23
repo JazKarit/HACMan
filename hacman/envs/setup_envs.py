@@ -109,8 +109,8 @@ def setup_envs(config, eval_env_only=False):
             from hacman.envs.sim_envs.simple_env import SimpleEnv
             env = SimpleEnv(**config)
         elif config['env'] == 'push_straight_env':
-            from hacman.envs.sim_envs.push_straight_env import PushStraightEnv
-            env = PushStraightEnv(**config)
+            from hacman.envs.sim_envs.push_straight_env1 import PushStraightEnv1
+            env = PushStraightEnv1(**config)
         elif config['env'] == 'push_straight_simple':
             from hacman.envs.sim_envs.push_straight_env0 import PushStraightEnv0
             env = PushStraightEnv0(**config)
