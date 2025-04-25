@@ -126,7 +126,8 @@ class PushStraightEnv1(BaseEnv):
             else:
                 raw_obs = self.env.reset(**kwargs)
                 
-            self.goal = self.env.sample_goal(raw_obs)
+            #self.goal = self.env.sample_goal(raw_obs)
+            self.goal = to_pose_mat(raw_obs['cube_pos'],raw_obs['cube_quat'])
             self.env.set_goal(self.goal)
             obs = self.process_observation(raw_obs)
                 

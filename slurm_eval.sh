@@ -4,11 +4,11 @@
 
 #SBATCH -A rbe577
 #SBATCH -N 1
-#SBATCH -n 16
-#SBATCH --mem 100g
-#SBATCH -J "HACMan_push_straight_train"
+#SBATCH -n 12
+#SBATCH --mem 60g
+#SBATCH -J "HACMan_push_straight_eval"
 #SBATCH -p academic
-#SBATCH -t 10:00:00
+#SBATCH -t 2:00:00
 #SBATCH --gres=gpu:1
 
 module load python/3.8
@@ -21,10 +21,12 @@ conda activate hacman
 
 LD_PRELOAD="" MUJOCO_PY_FORCE_CPU=1 python scripts/run.py \
 --env push_straight_env \
---clamp_critic_max 0 \
---clamp_critic_min -20 \
---ExpID 2014 \
+--gradient_steps 0 \
+--ExpID 3014 \
 --max_episode_steps 1 \
---initial_timesteps 1000 \
---train_n_envs 4 \
---eval_n_envs 2
+--initial_timesteps 0 \
+--eval_n_envs 2 \
+--eval 100 \
+--record_video \
+--record_from_cam agentview \
+--load_ckpt scripts/results/Exp2014-tmp-0/model-uadulbye/rl_model_latest
