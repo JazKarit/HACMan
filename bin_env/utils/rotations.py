@@ -367,3 +367,7 @@ def get_parallel_rotations():
             parallel_rotations += [canonical]
     assert len(parallel_rotations) == 24
     return parallel_rotations
+
+def scalar_angle_diff(a, b):
+    diff = (a - b + np.pi) % (2 * np.pi) - np.pi
+    return np.abs(diff)

@@ -11,6 +11,7 @@ import gym
 
 from .base_env import BaseEnv, sample_idx
 from hacman.utils.transformations import to_pose_mat, transform_point_cloud, decompose_pose_mat
+from bin_env.utils.rotations import quat2euler, scalar_angle_diff
 
 from hacman.utils.plotly_utils import plot_pcd, plot_action, plot_pcd_with_score
 from bin_env.util import angle_diff
@@ -274,28 +275,65 @@ class PushStraightEnv1(BaseEnv):
             reward = 0
             success = False
             return success, reward
+        
+        self.reward_mode == 'rotate_yaw'
     
-        object_pos, object_ori = decompose_pose_mat(obs['object_pose'])
+        if self.reward_mode == 'push_straight':
+            object_pos, object_ori = decompose_pose_mat(obs['object_pose'])
 
-        # goal pose is actually start pose
-        goal_pos, goal_ori = decompose_pose_mat(goal)
-        #pos_diff = (np.linalg.norm(object_pos-goal_pos)-0.5)**2
-        
-        # pos_loss is amount push distance is less than 0.05
-        # push distance = 0 -> pos_loss = 1
-        # push distance >= 0.05 -> pos_loss = 0
-        pos_loss = 20*max(0.05-np.linalg.norm(object_pos-goal_pos),0)
-        
-        # ori_loss is the angle difference 
-        # orientation flip -> loss 1
-        # orientation unchanged -> loss 0
-        ori_loss = angle_diff(object_ori, goal_ori) / np.pi
-        
-        loss = pos_loss+ori_loss
-        reward = -loss
+            # goal pose is actually start pose
+            goal_pos, goal_ori = decompose_pose_mat(goal)
+            #pos_diff = (np.linalg.norm(object_pos-goal_pos)-0.5)**2
+            
+            # pos_loss is amount push distance is less than 0.05
+            # push distance = 0 -> pos_loss = 1
+            # push distance >= 0.05 -> pos_loss = 0
+            pos_loss = 20*max(0.05-np.linalg.norm(object_pos-goal_pos),0)
+            
+            # ori_loss is the angle difference 
+            # orientation flip -> loss 1
+            # orientation unchanged -> loss 0
+            ori_loss = angle_diff(object_ori, goal_ori) / np.pi
+            
+            loss = pos_loss+ori_loss
+            reward = -loss
 
-        # 0.03 succes_threshold corresponds to 5 degree offset
-        # and at least 0.05 distance push
-        success = -reward < self.success_threshold
+            # 0.03 succes_threshold corresponds to 5 degree offset
+            # and at least 0.05 distance push
+            success = -reward < self.success_threshold
 
-        return success, reward
+            return success, reward
+        elif self.reward_mode == 'rotate_yaw':
+            object_pos, object_ori = decompose_pose_mat(obs['object_pose'])
+
+            # goal pose is actually start pose
+            goal_pos, goal_ori = decompose_pose_mat(goal)
+            goal_pos = np.array([goal_pos[0],goal_pos[2]])
+            object_pos = np.array([object_pos[0],object_pos[2]])
+
+            roll_obj, yaw_obj, pitch_obj = quat2euler(object_ori)
+            roll_goal, yaw_goal, pitch_goal = quat2euler(goal_ori)
+            
+            # pos_loss is linear push distance
+            # push distance = 0 -> pos_loss = 0
+            # push distance = 0.05 -> pos_loss = 1
+            pos_loss = min(20 * np.linalg.norm(object_pos-goal_pos), 1)
+
+            # Roll and pitch losses (we penalize deviation)
+            roll_loss = scalar_angle_diff(roll_obj,roll_goal) / np.pi
+            pitch_loss = scalar_angle_diff(pitch_obj,pitch_goal) / np.pi
+            
+            # Yaw loss -> distance from a full 30 degree turn
+            # no yaw -> loss 1
+            # at least 30 deg yaw -> loss 0
+            yaw_loss = np.min(1 - 6*scalar_angle_diff(yaw_obj,yaw_goal) / np.pi,1)
+            
+            loss = pos_loss + roll_loss + pitch_loss + yaw_loss
+            reward = -loss
+
+            # .03 success_threshold corresponds to push of 0.001
+            # and at least 30 deg yaw diff
+            success = -reward < self.success_threshold
+
+            return success, reward
+
