@@ -75,64 +75,65 @@ class BinArena(Arena):
             self.bin_collisions["bottom"].set("pos", array_to_string(np.array([0, 0, -1]))) # Hide
 
         # Left
-        size = np.array([self.bin_half_size[0], self.bin_thickness, self.bin_half_size[2]])
-        size += np.array([self.bin_thickness*2, 0, 0])  # To cover the edges
-        pos = np.array([0, -self.bin_half_size[1] - self.bin_thickness, self.bin_half_size[2]])
-        if "L" in self.hidden_walls: pos = np.array([0, 0, -1])
-        self.bin_visuals["left"].set("size", array_to_string(size))
-        self.bin_visuals["left"].set("pos", array_to_string(pos))
-        self.bin_collisions["left"].set("size", array_to_string(size))
-        self.bin_collisions["left"].set("pos", array_to_string(pos))
-        if self.bin_planes["left"] is not None:
-            self.bin_planes["left"].set("pos", array_to_string(np.array([0, -self.bin_half_size[1], self.bin_half_size[2]])))
-            self.bin_collisions["left"].set("pos", array_to_string(np.array([0, 0, -1]))) # Hide
+        #size = np.array([self.bin_half_size[0], self.bin_thickness, self.bin_half_size[2]])
+        #size += np.array([self.bin_thickness*2, 0, 0])  # To cover the edges
+        #pos = np.array([0, -self.bin_half_size[1] - self.bin_thickness, self.bin_half_size[2]])
+        #if "L" in self.hidden_walls: pos = np.array([0, 0, -1])
+        #self.bin_visuals["left"].set("size", array_to_string(size))
+        #self.bin_visuals["left"].set("pos", array_to_string(pos))
+        #self.bin_collisions["left"].set("size", array_to_string(size))
+        #self.bin_collisions["left"].set("pos", array_to_string(pos))
+        #if self.bin_planes["left"] is not None:
+        #    self.bin_planes["left"].set("pos", array_to_string(np.array([0, -self.bin_half_size[1], self.bin_half_size[2]])))
+         #   self.bin_collisions["left"].set("pos", array_to_string(np.array([0, 0, -1]))) # Hide
                     
         # Right
-        size = np.array([self.bin_half_size[0], self.bin_thickness, self.bin_half_size[2]])
-        size += np.array([self.bin_thickness*2, 0, 0])  # To cover the edges
-        pos = np.array([0, self.bin_half_size[1] + self.bin_thickness, self.bin_half_size[2]])
-        if "R" in self.hidden_walls: pos = np.array([0, 0, -1])
-        self.bin_visuals["right"].set("size", array_to_string(size))
-        self.bin_visuals["right"].set("pos", array_to_string(pos))
-        self.bin_collisions["right"].set("size", array_to_string(size))
-        self.bin_collisions["right"].set("pos", array_to_string(pos))
-        if self.bin_planes["right"] is not None:
-            self.bin_planes["right"].set("pos", array_to_string(np.array([0, self.bin_half_size[1], self.bin_half_size[2]])))
-            self.bin_collisions["right"].set("pos", array_to_string(np.array([0, 0, -1]))) # Hide
+        #size = np.array([self.bin_half_size[0], self.bin_thickness, self.bin_half_size[2]])
+        #size += np.array([self.bin_thickness*2, 0, 0])  # To cover the edges
+        #pos = np.array([0, self.bin_half_size[1] + self.bin_thickness, self.bin_half_size[2]])
+        #if "R" in self.hidden_walls: pos = np.array([0, 0, -1])
+        #self.bin_visuals["right"].set("size", array_to_string(size))
+        #self.bin_visuals["right"].set("pos", array_to_string(pos))
+        #self.bin_collisions["right"].set("size", array_to_string(size))
+        #self.bin_collisions["right"].set("pos", array_to_string(pos))
+        #if self.bin_planes["right"] is not None:
+        #    self.bin_planes["right"].set("pos", array_to_string(np.array([0, self.bin_half_size[1], self.bin_half_size[2]])))
+        #    self.bin_collisions["right"].set("pos", array_to_string(np.array([0, 0, -1]))) # Hide
                     
         # Front
-        size = np.array([self.bin_thickness, self.bin_half_size[1], self.bin_half_size[2]])
-        size += np.array([0, self.bin_thickness*2, 0])  # To cover the edges
-        pos = np.array([self.bin_half_size[0] + self.bin_thickness, 0, self.bin_half_size[2]])
-        if "F" in self.hidden_walls: pos = np.array([0, 0, -1])
-        self.bin_visuals["front"].set("size", array_to_string(size))
-        self.bin_visuals["front"].set("pos", array_to_string(pos))
-        self.bin_collisions["front"].set("size", array_to_string(size))
-        self.bin_collisions["front"].set("pos", array_to_string(pos))
-        if self.bin_planes["front"] is not None:
-            self.bin_planes["front"].set("pos", array_to_string(np.array([self.bin_half_size[0], 0, self.bin_half_size[2]])))
-            self.bin_collisions["front"].set("pos", array_to_string(np.array([0, 0, -1]))) # Hide
+        #size = np.array([self.bin_thickness, self.bin_half_size[1], self.bin_half_size[2]])
+        #size += np.array([0, self.bin_thickness*2, 0])  # To cover the edges
+        #pos = np.array([self.bin_half_size[0] + self.bin_thickness, 0, self.bin_half_size[2]])
+        #if "F" in self.hidden_walls: pos = np.array([0, 0, -1])
+        #self.bin_visuals["front"].set("size", array_to_string(size))
+        #self.bin_visuals["front"].set("pos", array_to_string(pos))
+        #self.bin_collisions["front"].set("size", array_to_string(size))
+        #self.bin_collisions["front"].set("pos", array_to_string(pos))
+        #if self.bin_planes["front"] is not None:
+        #    self.bin_planes["front"].set("pos", array_to_string(np.array([self.bin_half_size[0], 0, self.bin_half_size[2]])))
+        #    self.bin_collisions["front"].set("pos", array_to_string(np.array([0, 0, -1]))) # Hide
                     
         # Back
-        size = np.array([self.bin_thickness, self.bin_half_size[1], self.bin_half_size[2]])
-        size += np.array([0, self.bin_thickness*2, 0])  # To cover the edges
-        pos = np.array([-self.bin_half_size[0] - self.bin_thickness, 0, self.bin_half_size[2]])
-        if "B" in self.hidden_walls: pos = np.array([0, 0, -1])
-        self.bin_visuals["back"].set("size", array_to_string(size))
-        self.bin_visuals["back"].set("pos", array_to_string(pos))
-        self.bin_collisions["back"].set("size", array_to_string(size))
-        self.bin_collisions["back"].set("pos", array_to_string(pos))
-        if self.bin_planes["back"] is not None:
-            self.bin_planes["back"].set("pos", array_to_string(np.array([-self.bin_half_size[0], 0, self.bin_half_size[2]])))
-            self.bin_collisions["back"].set("pos", array_to_string(np.array([0, 0, -1]))) # Hide
+        #size = np.array([self.bin_thickness, self.bin_half_size[1], self.bin_half_size[2]])
+        #size += np.array([0, self.bin_thickness*2, 0])  # To cover the edges
+        #pos = np.array([-self.bin_half_size[0] - self.bin_thickness, 0, self.bin_half_size[2]])
+        #if "B" in self.hidden_walls: pos = np.array([0, 0, -1])
+        #self.bin_visuals["back"].set("size", array_to_string(size))
+        #self.bin_visuals["back"].set("pos", array_to_string(pos))
+        #self.bin_collisions["back"].set("size", array_to_string(size))
+        #self.bin_collisions["back"].set("pos", array_to_string(pos))
+        #if self.bin_planes["back"] is not None:
+        #    self.bin_planes["back"].set("pos", array_to_string(np.array([-self.bin_half_size[0], 0, self.bin_half_size[2]])))
+        #    self.bin_collisions["back"].set("pos", array_to_string(np.array([0, 0, -1]))) # Hide
             
         # Set friction
         for key, value in self.bin_collisions.items():
-            value.set("friction", array_to_string(self.bin_friction))
-            value.set("solref", array_to_string(self.bin_solref))
-            value.set("solimp", array_to_string(self.bin_solimp))
-            value.set("priority", str(1))
-            value.set("condim", str(4))
+            if value is not None:
+                value.set("friction", array_to_string(self.bin_friction))
+                value.set("solref", array_to_string(self.bin_solref))
+                value.set("solimp", array_to_string(self.bin_solimp))
+                value.set("priority", str(1))
+                value.set("condim", str(4))
             
         # Set friction
         for key, value in self.bin_planes.items():

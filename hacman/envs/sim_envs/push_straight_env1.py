@@ -279,12 +279,23 @@ class PushStraightEnv1(BaseEnv):
 
         # goal pose is actually start pose
         goal_pos, goal_ori = decompose_pose_mat(goal)
-        pos_diff = (np.linalg.norm(object_pos-goal_pos)-0.5)**2
-        ori_diff = angle_diff(object_ori, goal_ori) / np.pi * 180.0
+        #pos_diff = (np.linalg.norm(object_pos-goal_pos)-0.5)**2
+        
+        # pos_loss is amount push distance is less than 0.05
+        # push distance = 0 -> pos_loss = 1
+        # push distance >= 0.05 -> pos_loss = 0
+        pos_loss = 20*max(0.05-np.linalg.norm(object_pos-goal_pos),0)
+        
+        # ori_loss is the angle difference 
+        # orientation flip -> loss 1
+        # orientation unchanged -> loss 0
+        ori_loss = angle_diff(object_ori, goal_ori) / np.pi
+        
+        loss = pos_loss+ori_loss
+        reward = -loss
 
-        # Pushing far is good, having the object rotate is bad
-        # 180 degreees = (0.5 meters)^2
-        reward = -1*(4 * pos_diff + ori_diff / 180)
+        # 0.03 succes_threshold corresponds to 5 degree offset
+        # and at least 0.05 distance push
         success = -reward < self.success_threshold
 
         return success, reward

@@ -126,7 +126,8 @@ class PokeEnv(BaseEnv):
             raise NotImplementedError    
         
         kwargs['table_solref'] = (0.01, 1)
-        kwargs['table_xml'] = 'bin_arena_all_side_planes.xml'
+        #kwargs['table_xml'] = 'bin_arena_all_side_planes.xml'
+        kwargs['table_xml'] = 'flat_table.xml'
         kwargs['hard_reset'] = object_name is None and object_dataset != 'cube'
 
         # Setup Controller

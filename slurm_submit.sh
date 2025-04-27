@@ -3,8 +3,8 @@
 #SBATCH --mail-type=ALL
 
 #SBATCH -A rbe577
-#SBATCH -N 1
-#SBATCH -n 16
+#SBATCH -N 2
+#SBATCH -n 24
 #SBATCH --mem 100g
 #SBATCH -J "HACMan_push_straight_train"
 #SBATCH -p academic
@@ -23,8 +23,8 @@ LD_PRELOAD="" MUJOCO_PY_FORCE_CPU=1 python scripts/run.py \
 --env push_straight_env \
 --clamp_critic_max 0 \
 --clamp_critic_min -20 \
---ExpID 2014 \
+--ExpID 2016 \
 --max_episode_steps 1 \
 --initial_timesteps 1000 \
---train_n_envs 4 \
---eval_n_envs 2
+--train_n_envs 8 \
+--eval_n_envs 4
