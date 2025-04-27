@@ -54,7 +54,6 @@ def add_env_config(parser):
     parser.add_argument("--reward_scale", default=1., type=float, help="Reward scale")
     parser.add_argument("--fixed_ep_len", action="store_true", help="Fixed episode length")
     parser.add_argument("--reward_gripper_distance", default=None, type=float, help="Whether to use distance in the reward calculation")
-
     return
 
 def setup_envs(config, eval_env_only=False): 
