@@ -11,7 +11,7 @@ import gym
 
 from .base_env import BaseEnv, sample_idx
 from hacman.utils.transformations import to_pose_mat, transform_point_cloud, decompose_pose_mat
-from bin_env.utils.rotations import quat2euler, scalar_angle_diff
+from bin_env.utils.rotations import quat2euler, scalar_angle_diff, quat_mul, quat_conjugate, quat2axisangle
 
 from hacman.utils.plotly_utils import plot_pcd, plot_action, plot_pcd_with_score
 from bin_env.util import angle_diff
@@ -304,40 +304,69 @@ class PushStraightEnv1(BaseEnv):
 
             #return success, reward
         #elif self.reward_mode == 'rotate_yaw':
+        # object_pos, object_ori = decompose_pose_mat(obs['object_pose'])
+
+        # # goal pose is actually start pose
+        # goal_pos, goal_ori = decompose_pose_mat(goal)
+        # goal_pos = np.array([goal_pos[0],goal_pos[1]])
+        # object_pos = np.array([object_pos[0],object_pos[1]])
+
+        # roll_obj, pitch_obj, yaw_obj = quat2euler(object_ori)
+        # roll_goal, pitch_goal, yaw_goal = quat2euler(goal_ori)
+            
+        # # pos_loss is linear push distance
+        # # push distance = 0 -> pos_loss = 0
+        # # push distance = 0.2 -> pos_loss = 1
+        # pos_loss = 5 * np.linalg.norm(object_pos-goal_pos)
+
+        # # Roll and pitch losses (we penalize deviation)
+        # roll_loss = scalar_angle_diff(roll_obj,roll_goal) / np.pi
+        # pitch_loss = scalar_angle_diff(pitch_obj,pitch_goal) / np.pi
+            
+        # # Yaw loss -> distance from a full 30 degree turn
+        # # no yaw -> loss 1
+        # # at least 30 deg yaw -> loss 0
+        # yaw_loss = np.clip(1 - 6*scalar_angle_diff(yaw_obj,yaw_goal) / np.pi,0,1)
+            
+        # loss = pos_loss + roll_loss + pitch_loss + yaw_loss
+        # reward = -loss
+
+        # # .03 success_threshold corresponds to push of 0.001
+        # # and at least 30 deg yaw diff
+        # success = -reward < self.success_threshold
+        # if success == None:
+        #     print("Success none")
+        # if reward == None:
+        #     print("reward none")
+        #     print(pos_loss,roll_loss,pitch_loss,yaw_loss)
+        # return success, reward
+        #elif self.reward_mode == 'flip_up':
         object_pos, object_ori = decompose_pose_mat(obs['object_pose'])
 
-        # goal pose is actually start pose
+           # goal pose is actually start pose
         goal_pos, goal_ori = decompose_pose_mat(goal)
-        goal_pos = np.array([goal_pos[0],goal_pos[1]])
-        object_pos = np.array([object_pos[0],object_pos[1]])
-
-        roll_obj, pitch_obj, yaw_obj = quat2euler(object_ori)
-        roll_goal, pitch_goal, yaw_goal = quat2euler(goal_ori)
+        
+        goal_pos_plane = np.array([goal_pos[0],goal_pos[1]])
+        object_pos_plane = np.array([object_pos[0],object_pos[1]])
+        
+        quat_rot = quat_mul(goal_ori,quat_conjugate(object_ori))
+        
+        rot_axis, rot_angle = quat2axisangle(quat_rot)
+        
+        pos_diff_plane = np.linalg.norm(object_pos_plane-goal_pos_plane)
+        
+        pos_loss = np.clip(5*pos_diff_plane,0,1)
+        
+        # The more vertical the rot angle, the more we penalize
+        rot_axis_loss = np.abs(np.dot(rot_axis, np.array([0,0,1])))
             
-        # pos_loss is linear push distance
-        # push distance = 0 -> pos_loss = 0
-        # push distance = 0.2 -> pos_loss = 1
-        pos_loss = 5 * np.linalg.norm(object_pos-goal_pos)
-
-        # Roll and pitch losses (we penalize deviation)
-        roll_loss = scalar_angle_diff(roll_obj,roll_goal) / np.pi
-        pitch_loss = scalar_angle_diff(pitch_obj,pitch_goal) / np.pi
+        # Aim for 60 degree turn or more
+        rot_angle_loss = np.clip(1 - 3*np.abs(rot_angle) / np.pi,0,1)
             
-        # Yaw loss -> distance from a full 30 degree turn
-        # no yaw -> loss 1
-        # at least 30 deg yaw -> loss 0
-        yaw_loss = np.clip(1 - 6*scalar_angle_diff(yaw_obj,yaw_goal) / np.pi,0,1)
-            
-        loss = pos_loss + roll_loss + pitch_loss + yaw_loss
+        loss = rot_axis_loss+pos_loss+rot_angle_loss
         reward = -loss
 
-        # .03 success_threshold corresponds to push of 0.001
-        # and at least 30 deg yaw diff
         success = -reward < self.success_threshold
-        if success == None:
-            print("Success none")
-        if reward == None:
-            print("reward none")
-            print(pos_loss,roll_loss,pitch_loss,yaw_loss)
+
         return success, reward
 
