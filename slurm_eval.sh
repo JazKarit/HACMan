@@ -6,7 +6,7 @@
 #SBATCH -N 2
 #SBATCH -n 24
 #SBATCH --mem 80g
-#SBATCH -J "HACMan_push_straight_eval"
+#SBATCH -J "HACMan_rotate_eval"
 #SBATCH -p academic
 #SBATCH -t 2:00:00
 #SBATCH --gres=gpu:1
@@ -22,11 +22,11 @@ conda activate hacman
 LD_PRELOAD="" MUJOCO_PY_FORCE_CPU=1 python scripts/run.py \
 --env push_straight_env \
 --gradient_steps 0 \
---ExpID 5002 \
+--ExpID 5003 \
 --max_episode_steps 2 \
 --initial_timesteps 0 \
 --eval_n_envs 4 \
 --eval 100 \
 --record_video \
 --record_from_cam agentview \
---load_ckpt scripts/results/Exp4002-tmp-0/model-kkkqej9f/rl_model_latest
+--load_ckpt scripts/results/Exp4003-tmp-0/model-okcqe9dq/rl_model_latest

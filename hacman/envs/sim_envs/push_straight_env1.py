@@ -312,34 +312,21 @@ class PushStraightEnv1(BaseEnv):
         goal_pos = np.array([goal_pos[0],goal_pos[1]])
         object_pos = np.array([object_pos[0],object_pos[1]])
 
-        roll_obj, pitch_obj, yaw_obj = quat2euler(object_ori)
-        roll_goal, pitch_goal, yaw_goal = quat2euler(goal_ori)
-            
-        # pos_loss is linear push distance
-        # push distance = 0 -> pos_loss = 0
-        # push distance = 0.2 -> pos_loss = 1
-        pos_loss = 5 * np.linalg.norm(object_pos-goal_pos)
-
-        # Roll and pitch losses (we penalize deviation)
-        roll_loss = scalar_angle_diff(roll_obj,roll_goal) / np.pi
-        pitch_loss = scalar_angle_diff(pitch_obj,pitch_goal) / np.pi
-            
-        # Yaw loss -> distance from a full 30 degree turn
-        # no yaw -> loss 1
-        # at least 30 deg yaw -> loss 0
-        yaw_loss = np.clip(1 - 6*scalar_angle_diff(yaw_obj,yaw_goal) / np.pi,0,1)
-            
-        loss = pos_loss + roll_loss + pitch_loss + yaw_loss
+        goal_pos_plane = np.array([goal_pos[0],goal_pos[1]])
+        object_pos_plane = np.array([object_pos[0],object_pos[1]])
+        quat_rot = quat_mul(goal_ori,quat_conjugate(object_ori))
+        rot_axis, rot_angle = quat2axisangle(quat_rot)
+        pos_diff_plane = np.linalg.norm(object_pos_plane-goal_pos_plane)
+        pos_loss = 5*pos_diff_plane
+        
+        # The more vertical the rot angle, the better
+        rot_axis_loss = 1-np.abs(np.dot(rot_axis, np.array([0,0,1])))
+        
+        # Aim for 30 degree turn or more
+        rot_angle_loss = np.clip(1 - 6*np.abs(rot_angle) / np.pi,0,1)
+        loss = rot_axis_loss + pos_loss/2 + rot_angle_loss
         reward = -loss
-
-        # .03 success_threshold corresponds to push of 0.001
-        # and at least 30 deg yaw diff
-        success = -reward < self.success_threshold
-        if success == None:
-            print("Success none")
-        if reward == None:
-            print("reward none")
-            print(pos_loss,roll_loss,pitch_loss,yaw_loss)
+        success = (rot_angle_loss == 0) and (rot_axis_loss < 1-np.sqrt(3)/2) and (pos_loss < 0.25)
         return success, reward
         
         
@@ -358,18 +345,18 @@ class PushStraightEnv1(BaseEnv):
         
         pos_diff_plane = np.linalg.norm(object_pos_plane-goal_pos_plane)
         
-        pos_loss = np.clip(5*pos_diff_plane,0,1)
+        pos_loss = 5*pos_diff_plane
         
-        # The more vertical the rot angle, the more we penalize
-        rot_axis_loss = np.abs(np.dot(rot_axis, np.array([0,0,1])))
+        # The more vertical the rot angle, the better
+        rot_axis_loss = 1-np.abs(np.dot(rot_axis, np.array([0,0,1])))
             
-        # Aim for 60 degree turn or more
-        rot_angle_loss = np.clip(1 - 3*np.abs(rot_angle) / np.pi,0,1)
+        # Aim for 30 degree turn or more
+        rot_angle_loss = np.clip(1 - 6*np.abs(rot_angle) / np.pi,0,1)
             
-        loss = rot_axis_loss+pos_loss+rot_angle_loss
+        loss = rot_axis_loss + pos_loss/2 + rot_angle_loss
         reward = -loss
 
-        success = -reward < self.success_threshold
+        success = (rot_angle_loss == 0) and (rot_axis_loss < 1-np.sqrt(3)/2) and (pos_loss < 0.25)
 
         return success, reward
 

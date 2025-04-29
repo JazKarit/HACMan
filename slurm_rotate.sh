@@ -6,7 +6,7 @@
 #SBATCH -N 2
 #SBATCH -n 24
 #SBATCH --mem 100g
-#SBATCH -J "HACMan_push_straight_train"
+#SBATCH -J "HACMan_rotate_train"
 #SBATCH -p academic
 #SBATCH -t 10:00:00
 #SBATCH --gres=gpu:1
@@ -23,8 +23,8 @@ LD_PRELOAD="" MUJOCO_PY_FORCE_CPU=1 python scripts/run.py \
 --env push_straight_env \
 --clamp_critic_max 0 \
 --clamp_critic_min -20 \
---ExpID 4002 \
---max_episode_steps 2 \
---initial_timesteps 1000 \
---train_n_envs 8 \
---eval_n_envs 4
+--ExpID 4004 \
+--max_episode_steps 1 \
+--initial_timesteps 2000 \
+--train_n_envs 4 \
+--eval_n_envs 2
