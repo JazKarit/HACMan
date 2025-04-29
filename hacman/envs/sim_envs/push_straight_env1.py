@@ -363,10 +363,10 @@ class PushStraightEnv1(BaseEnv):
         # Aim for 60 degree turn or more
         rot_angle_loss = np.clip(1 - 3*np.abs(rot_angle) / np.pi,0,1)
             
-        loss = rot_axis_loss+pos_loss+rot_angle_loss
+        loss = rot_axis_loss + pos_loss/10 + rot_angle_loss
         reward = -loss
 
-        success = -reward < self.success_threshold
+        success = (rot_angle_loss == 0) and (rot_axis_loss < 1/np.sqrt(2))
 
         return success, reward
 
