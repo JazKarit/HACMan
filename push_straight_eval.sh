@@ -22,10 +22,10 @@ conda activate hacman
 LD_PRELOAD="" MUJOCO_PY_FORCE_CPU=1 python scripts/run.py \
 --env push_straight_env \
 --gradient_steps 0 \
---ExpID 8002 \
+--ExpID 8102 \
 --max_episode_steps 1 \
 --initial_timesteps 0 \
---eval_n_envs 4 \
+--eval_n_envs 8 \
 --eval 200 \
---load_ckpt scripts/results/Exp4004-tmp-0/model-0niw9xqf/rl_model_latest \
---object_name pan_frl_apartment_pan_01_M
+--load_ckpt scripts/results/Exp2016-tmp-0/model-ccpg4c79/rl_model_latest \
+--object_name rubiks_cube_077_rubiks_cube_M
