@@ -1,0 +1,37 @@
+Compare trained policies for several objects. Compare success rates.
+
+
+All:
+- rubiks_cube_077_rubiks_cube_M  - train
+- mug_025_mug_M - train
+- lunch_bag_Olive_Kids_Trains_Planes_Trucks_Munch_n_Lunch_Bag_M - unseen_class
+- lens_Nikon_1_AW1_w11275mm_Lens_Silver_M - unseen_class
+- tape_Cole_Hardware_Antislip_Surfacing_Material_White_M - unseen_class
+- plant_container_Sapota_Threshold_4_Ceramic_Round_Planter_Red_M - unseen instance
+
+
+Flip up:
+- bowl_Threshold_Porcelain_Serving_Bowl_Coupe_White_M - train
+- dog_bowl_Top_Paw_Dog_Bow_Bone_Ceramic_13_fl_oz_total_M - unseen class
+Rotate:
+- pan_frl_apartment_pan_01_M - train
+
+
+
+Results:
+
+Rotate:
+Rubiks Cube: succ=0.440 +/- 0.138. mean_reward=-0.55 +/- 0.3838467600619419
+Pan Fry: succ=0.130 +/- 0.047. mean_reward=-0.96 +/- 0.3984080783444156
+mug_025_mug_M: succ=0.220 +/- 0.057. mean_reward=-0.85 +/- 0.4159644600132083
+
+
+
+Push Straight:
+Rubiks Cube: succ=0.955 +/- 0.029. mean_reward=-0.02 +/- 0.09273114786555688
+Mug: succ=0.625 +/- 0.067. mean_reward=-0.17 +/- 0.2849300135922265
+Lunch Bag: succ=0.825 +/- 0.053. mean_reward=-0.06 +/- 0.16098061686136617
+tape_Cole_Hardware:succ=0.465 +/- 0.069. mean_reward=-0.17 +/- 0.2123058311977087
+plant_container_Sapota_Threshold_4_Ceramic_Round_Planter_Red_M 0.245 +/- 0.060. mean_reward=-0.24 +/- 0.24681396195654
+
+
