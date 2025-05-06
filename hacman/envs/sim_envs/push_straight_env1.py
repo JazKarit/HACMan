@@ -333,19 +333,18 @@ class PushStraightEnv1(BaseEnv):
         
     def _evaluate_flip_up(self, obs, goal):
         object_pos, object_ori = decompose_pose_mat(obs['object_pose'])
-        
+
         # goal pose is actually start pose
         goal_pos, goal_ori = decompose_pose_mat(goal)
-        
+
         goal_pos_plane = np.array([goal_pos[0],goal_pos[1]])
         object_pos_plane = np.array([object_pos[0],object_pos[1]])
-        
+
         quat_rot = quat_mul(goal_ori,quat_conjugate(object_ori))
-        
+
         rot_axis, rot_angle = quat2axisangle(quat_rot)
-        
+
         pos_diff_plane = np.linalg.norm(object_pos_plane-goal_pos_plane)
-        
         pos_loss = np.clip(5*pos_diff_plane,0,1)
 
         # The more vertical the rot angle, the more we penalize
