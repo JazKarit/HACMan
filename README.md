@@ -30,7 +30,7 @@ Please feel free to open an issue or email us at {wenxuanz, bowenj}@andrew.cmu.e
 
 ## Forked by Jaskrit Singh 
 
-(jsingh3@wpi.edu)
+jsingh3@wpi.edu
 
 Added new goal mode: _No goal_
 - no goal mode is for training against a reward function without a specific goal
@@ -45,9 +45,11 @@ Added new simulation arena: _flat_table_
 
 Added three new reward functions to train behavior-specific learning:
 
-_push_straight_: Encourages the agent to push the object without 
-_spin_: Rewards rotating an object in the z-Axis
-_roll_: Rewards rotating an object in an axis orthogonal to the z-Axis
+- _push_straight_: Encourages the agent to push the object without 
+
+- _spin_: Rewards rotating an object in the z-Axis
+
+- _roll_: Rewards rotating an object in an axis orthogonal to the z-Axis
 
 Added plotting script
 
