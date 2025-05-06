@@ -45,10 +45,8 @@ Added new simulation arena: _flat_table_
 
 Added three new reward functions to train behavior-specific learning:
 
-- _push_straight_: Encourages the agent to push the object without 
-
+- _push_straight_: Encourages the agent to push the object without rotation
 - _spin_: Rewards rotating an object in the z-Axis
-
 - _roll_: Rewards rotating an object in an axis orthogonal to the z-Axis
 
 Added plotting script
