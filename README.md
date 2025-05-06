@@ -13,6 +13,7 @@ Please feel free to open an issue or email us at {wenxuanz, bowenj}@andrew.cmu.e
 ## Table of Contents
 - [HACMan Code Release](#hacman-code-release)
   - [Table of Contents](#table-of-contents)
+- [Information about this Fork](#forked-by-jaskrit-singh)
 - [Installation](#installation)
   - [Configure WandB logging](#configure-wandb-logging)
   - [(Optional) HACMan Bin Env Dependencies](#optional-hacman-bin-env-dependencies)
@@ -26,6 +27,30 @@ Please feel free to open an issue or email us at {wenxuanz, bowenj}@andrew.cmu.e
   - [Explanation of the hybrid policy](#explanation-of-the-hybrid-policy)
   - [Explanation of the environment wrappers](#explanation-of-the-environment-wrappers)
   - [License](#license)
+
+## Forked by Jaskrit Singh 
+
+(jsingh3@wpi.edu)
+
+Added new goal mode: _No goal_
+- no goal mode is for training against a reward function without a specific goal
+
+Added new environment: _push_straight_environment1_
+- This environment can be used to train a reward function without a goal
+- Goal is set to the initial position
+
+Added new simulation arena: _flat_table_
+- _flat_table_ removes walls from the bin env
+
+
+Added three new reward functions to train behavior-specific learning:
+
+_push_straight_: Encourages the agent to push the object without 
+_spin_: Rewards rotating an object in the z-Axis
+_roll_: Rewards rotating an object in an axis orthogonal to the z-Axis
+
+Added plotting script
+
 
 
 # Installation
