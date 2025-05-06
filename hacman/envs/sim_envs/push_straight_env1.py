@@ -276,7 +276,7 @@ class PushStraightEnv1(BaseEnv):
             success = False
             return success, reward
         
-        return self._evaluate_push_straight(obs, goal)
+        return self._evaluate_rotate(obs, goal)
           
     def _evaluate_push_straight(self, obs, goal):
         object_pos, object_ori = decompose_pose_mat(obs['object_pose'])
@@ -324,15 +324,16 @@ class PushStraightEnv1(BaseEnv):
         
         # Aim for 30 degree turn or more
         rot_angle_loss = np.clip(1 - 6*np.abs(rot_angle) / np.pi,0,1)
-        loss = rot_axis_loss + pos_loss/2 + rot_angle_loss
+        #loss = rot_axis_loss + pos_loss/2 + rot_angle_loss
+        loss = rot_axis_loss + rot_angle_loss + pos_loss/10
         reward = -loss
-        success = (rot_angle_loss == 0) and (rot_axis_loss < 1-np.sqrt(3)/2) and (pos_loss < 0.25)
+        success = (rot_angle_loss == 0) and (rot_axis_loss < 1-1/np.sqrt(2))
         return success, reward
         
         
     def _evaluate_flip_up(self, obs, goal):
         object_pos, object_ori = decompose_pose_mat(obs['object_pose'])
-
+        
         # goal pose is actually start pose
         goal_pos, goal_ori = decompose_pose_mat(goal)
         
@@ -345,18 +346,21 @@ class PushStraightEnv1(BaseEnv):
         
         pos_diff_plane = np.linalg.norm(object_pos_plane-goal_pos_plane)
         
-        pos_loss = 5*pos_diff_plane
+        pos_loss = np.clip(5*pos_diff_plane,0,1)
+
+        # The more vertical the rot angle, the more we penalize
+        rot_axis_loss = np.abs(np.dot(rot_axis, np.array([0,0,1])))
+
+        # Aim for 60 degree turn or more
+        rot_angle_loss = np.clip(1 - 3*np.abs(rot_angle) / np.pi,0,1)
         
-        # The more vertical the rot angle, the better
-        rot_axis_loss = 1-np.abs(np.dot(rot_axis, np.array([0,0,1])))
-            
-        # Aim for 30 degree turn or more
-        rot_angle_loss = np.clip(1 - 6*np.abs(rot_angle) / np.pi,0,1)
-            
-        loss = rot_axis_loss + pos_loss/2 + rot_angle_loss
+        loss = rot_axis_loss+pos_loss+rot_angle_loss
+        loss = rot_axis_loss + pos_loss/10 + rot_angle_loss
+        
         reward = -loss
-
-        success = (rot_angle_loss == 0) and (rot_axis_loss < 1-np.sqrt(3)/2) and (pos_loss < 0.25)
-
+        
+        success = -reward < self.success_threshold
+        
+        success = (rot_angle_loss == 0) and (rot_axis_loss < 1/np.sqrt(2))
+        
         return success, reward
-

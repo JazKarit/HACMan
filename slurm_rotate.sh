@@ -23,8 +23,8 @@ LD_PRELOAD="" MUJOCO_PY_FORCE_CPU=1 python scripts/run.py \
 --env push_straight_env \
 --clamp_critic_max 0 \
 --clamp_critic_min -20 \
---ExpID 4004 \
+--ExpID 4006 \
 --max_episode_steps 1 \
---initial_timesteps 2000 \
---train_n_envs 4 \
---eval_n_envs 2
+--initial_timesteps 1500 \
+--train_n_envs 8 \
+--eval_n_envs 4

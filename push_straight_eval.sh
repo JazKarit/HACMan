@@ -22,10 +22,10 @@ conda activate hacman
 LD_PRELOAD="" MUJOCO_PY_FORCE_CPU=1 python scripts/run.py \
 --env push_straight_env \
 --gradient_steps 0 \
---ExpID 8108 \
+--ExpID 8109 \
 --max_episode_steps 1 \
 --initial_timesteps 0 \
 --eval_n_envs 8 \
 --eval 200 \
 --load_ckpt scripts/results/Exp2016-tmp-0/model-ccpg4c79/rl_model_latest \
---object_name plant_container_Central_Garden_Flower_Pot_Goo_425_M
+--object_name bowl_Threshold_Porcelain_Serving_Bowl_Coupe_White_M 
